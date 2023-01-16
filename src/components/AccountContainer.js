@@ -1,46 +1,37 @@
-import React,{useEffect, useState} from "react";
+import React, { useEffect, useState} from "react";
 import TransactionsList from "./TransactionsList";
 import Search from "./Search";
 import AddTransactionForm from "./AddTransactionForm";
 
 function AccountContainer() {
-  const[transactions,setTransactions]= useState([])
+  //store fetched data from side effect
+  const [transactions, setTransactions] = useState([]);
+
+  //manage state for user serch parameters
+  const [ search, setSearch] = useState(""); 
   
-  useEffect(()=>{
+   //Featch all transaction from server
+  useEffect(() => {
     fetch("http://localhost:8001/transactions")
-    .then(res => res.json())
-    .then(data => {setTransactions(data);
-      
-    });
-  },[]);
-  
-  console.log(transactions)
+      .then((r) => r.json())
+      .then((data) => setTransactions(data)) //Setter activity for transaction after server response
+  }, [])
 
-function setSearchItems(search){
-  setTransactions(transactions=>transactions.filter(transaction=>transaction.description.includes(search)))
+  //Re-renders page with updated state after creating a new transaction
+  function updatedTransactions(newTransactions) {
+   const updatedTransactionsArray = [...transactions, newTransactions]
+   setTransactions(updatedTransactionsArray)
+  }
 
-}  
+  //render all components
   return (
     <div>
-      <Search onSearch={setSearchItems} /> 
-      <AddTransactionForm 
-      transactions={transactions}
-      setTransactions={setTransactions}
-      />
-      <TransactionsList
-       transactions={transactions}
-      //  {transactions.filter(transactions=>{
-      //   if (Search===''){
-      //     return true
-      //   }
-      // })
-    //}
-        
-    
-
-       />
+      <Search search={search} setSearch={setSearch}/>
+      <AddTransactionForm newData={updatedTransactions} />
+      <TransactionsList transactions={transactions} setTransactions={setTransactions} search={search} />
     </div>
   );
 }
+
 
 export default AccountContainer;

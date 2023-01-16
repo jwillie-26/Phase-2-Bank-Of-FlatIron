@@ -1,11 +1,10 @@
-import React,{useState} from "react";
+import React from "react";
 
-function Search({onSearch}) {
-  const[search,setSearch] = useState("");
- function handleSearch(e){
-  setSearch(e.target.value)
-  onSearch(search)
- }
+function Search({search, setSearch}) {
+  function handleSearch(event){
+    setSearch(event.target.value)
+  } 
+  
   return (
     <div className="ui large fluid icon input">
       <input
